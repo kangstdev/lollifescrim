@@ -50,6 +50,9 @@ public class MemberController {
     /**
      * 회원가입 처리
      */
+    /**
+     * 회원가입 처리
+     */
     @PostMapping("/join")
     public String join(
             @Valid @ModelAttribute JoinRequest joinRequest,
@@ -59,12 +62,24 @@ public class MemberController {
         model.addAttribute("lines", LolLine.values());
 
         if (bindingResult.hasErrors()) {
+            System.out.println("========== 회원가입 검증 실패 ==========");
+
+            bindingResult.getFieldErrors().forEach(error -> {
+                System.out.println("필드명: " + error.getField());
+                System.out.println("입력값: " + error.getRejectedValue());
+                System.out.println("메시지: " + error.getDefaultMessage());
+                System.out.println("------------------------------------");
+            });
+
             return "member/join";
         }
 
         try {
             memberService.join(joinRequest);
         } catch (IllegalArgumentException e) {
+            System.out.println("========== 회원가입 처리 실패 ==========");
+            System.out.println("메시지: " + e.getMessage());
+
             model.addAttribute("errorMessage", e.getMessage());
             return "member/join";
         }

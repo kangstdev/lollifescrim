@@ -68,6 +68,25 @@ public class ParticipationController {
             return "redirect:/login";
         }
 
+        /**
+         * 증바람(ARAM)이 아닐 때만 라인 필수 검사
+         *
+         * NORMAL = 내전       → 라인 필요
+         * FREE   = 자유내전   → 라인 필요
+         * FLEX   = 자유랭크   → 라인 필요
+         * ARAM   = 증바람     → 라인 필요 없음
+         */
+        if (participationRequest.getParticipationType() != null
+                && participationRequest.getParticipationType().isLineRequired()
+                && participationRequest.getSelectedLine() == null) {
+
+            bindingResult.rejectValue(
+                    "selectedLine",
+                    "required",
+                    "참여 라인을 선택해주세요."
+            );
+        }
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("loginMember", loginMember);
             model.addAttribute("participationType", participationRequest.getParticipationType());
@@ -117,4 +136,34 @@ public class ParticipationController {
     private String[] getDefaultTimes() {
         return new String[]{"20", "21", "22"};
     }
+
+
+    /**
+     * 참여 신청 취소
+     */
+    @PostMapping("/cancel")
+    public String cancel(
+            @RequestParam Long participationId,
+            HttpSession session,
+            Model model
+    ) {
+        LoginMember loginMember = (LoginMember) session.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            participationService.cancelParticipation(loginMember.getId(), participationId);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("loginMember", loginMember);
+            model.addAttribute("participations", participationService.findMyParticipations(loginMember.getId()));
+            model.addAttribute("errorMessage", e.getMessage());
+            return "participation/status";
+        }
+
+        return "redirect:/participation/status";
+    }
+
 }
+

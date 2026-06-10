@@ -23,6 +23,5 @@ public class ParticipationRequest {
     private List<String> selectedTimes;
 
     // 참여 라인: 하나만 선택
-    @NotNull(message = "참여 라인을 선택해주세요.")
     private LolLine selectedLine;
 }

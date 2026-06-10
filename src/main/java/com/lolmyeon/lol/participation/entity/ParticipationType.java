@@ -1,18 +1,23 @@
 package com.lolmyeon.lol.participation.entity;
 
-public enum ParticipationType {
-       NORMAL("내전"),
-       FREE("자유내전"),
-       FLEX("자유랭크"),
-       ARAM("증바람");
+public enum ParticipationType  {
 
-       private final String label;
+    NORMAL("내전"),
+    FREE("자유내전"),
+    FLEX("자유랭크"),
+    ARAM("증바람");
 
-           ParticipationType(String label){
-           this.label = label;
-       }
+    private final String label;
 
-       public String getLabel(){
-           return label;
-       }
+    ParticipationType(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public boolean isLineRequired() {
+        return this != ARAM;
+    }
 }
