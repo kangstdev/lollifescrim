@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -7,7 +8,7 @@
     <meta charset="UTF-8">
     <title>롤면서살자 | 회원가입</title>
 
-    <link rel="stylesheet" href="<c:url value='/css/join/join.css' />">
+  <link rel="stylesheet" href="<c:url value='/css/member/join.css' />">
 </head>
 <body>
 
