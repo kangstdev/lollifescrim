@@ -91,49 +91,71 @@ body {
     color: #facc15;
 }
 
+/* 메뉴 2열 카드형 */
 .menu-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+    margin-top: 22px;
 }
 
-.menu-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-height: 58px;
-    padding: 0 18px;
-    border-radius: 17px;
+.menu-card {
+    height: 104px;
+    padding: 14px 10px;
+    border-radius: 20px;
     background: rgba(2, 6, 23, 0.62);
     border: 1px solid rgba(148, 163, 184, 0.22);
     color: #f8fafc;
     text-decoration: none;
-    font-size: 15px;
-    font-weight: 800;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
     transition: 0.18s;
 }
 
-.menu-btn:hover {
-    transform: translateY(-1px);
-    border-color: rgba(250, 204, 21, 0.6);
-    background: rgba(30, 41, 59, 0.85);
+.menu-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(250, 204, 21, 0.55);
+    background: rgba(30, 41, 59, 0.86);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
 }
 
-.menu-btn.primary {
+.menu-card.primary {
     background: linear-gradient(135deg, #ca8a04, #facc15);
     color: #111827;
-    border: 0;
+    border-color: transparent;
 }
 
-.menu-btn .left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.menu-card.create {
+    background: rgba(124, 58, 237, 0.18);
+    border-color: rgba(167, 139, 250, 0.42);
 }
 
-.menu-btn .icon {
-    font-size: 20px;
+.menu-card.create:hover {
+    background: rgba(124, 58, 237, 0.28);
+    border-color: rgba(196, 181, 253, 0.65);
+}
+
+.menu-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.menu-title {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    text-align: center;
+    line-height: 1.25;
+}
+
+.menu-card.primary .menu-icon,
+.menu-card.primary .menu-title {
+    color: #111827;
 }
 
 .logout-form {
@@ -163,4 +185,31 @@ body {
     font-size: 12px;
     text-align: center;
     line-height: 1.5;
+}
+
+@media (max-width: 420px) {
+    .page-wrap {
+        padding: 16px;
+    }
+
+    .main-card {
+        padding: 28px;
+    }
+
+    .menu-grid {
+        gap: 10px;
+    }
+
+    .menu-card {
+        height: 92px;
+        border-radius: 18px;
+    }
+
+    .menu-icon {
+        font-size: 24px;
+    }
+
+    .menu-title {
+        font-size: 14px;
+    }
 }

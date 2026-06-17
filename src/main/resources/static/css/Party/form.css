@@ -1,4 +1,3 @@
-
 * {
     box-sizing: border-box;
 }
@@ -7,9 +6,10 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: radial-gradient(circle at top left, rgba(29, 78, 216, 0.45), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(202, 138, 4, 0.28), transparent 30%),
-    linear-gradient(135deg, #050816 0%, #0f172a 50%, #020617 100%);
+    background:
+            radial-gradient(circle at top left, rgba(29, 78, 216, 0.45), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(202, 138, 4, 0.28), transparent 30%),
+            linear-gradient(135deg, #050816 0%, #0f172a 50%, #020617 100%);
     color: #f8fafc;
     display: flex;
     align-items: center;
@@ -23,14 +23,15 @@ body {
 
 .form-card {
     width: 100%;
-    max-width: 520px;
+    max-width: 560px;
     margin: 0 auto;
     padding: 34px;
     border: 1px solid rgba(212, 175, 55, 0.35);
     border-radius: 26px;
     background: rgba(15, 23, 42, 0.92);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .header {
@@ -107,8 +108,7 @@ body {
     font-weight: 900;
 }
 
-.line-grid,
-.time-grid {
+.type-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -119,13 +119,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 52px;
+    min-height: 54px;
     border-radius: 16px;
     background: rgba(2, 6, 23, 0.62);
     border: 1px solid rgba(148, 163, 184, 0.22);
     color: #f8fafc;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 900;
     cursor: pointer;
     transition: 0.18s;
 }
@@ -148,9 +148,37 @@ body {
     border-color: transparent;
 }
 
+.text-input {
+    width: 100%;
+    height: 50px;
+    padding: 0 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: rgba(2, 6, 23, 0.62);
+    color: #f8fafc;
+    font-size: 15px;
+    font-weight: 800;
+    outline: none;
+}
+
+.text-input:focus {
+    border-color: rgba(250, 204, 21, 0.65);
+}
+
+.text-input::placeholder,
+.memo::placeholder {
+    color: #64748b;
+}
+
+.help-text {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 12px;
+}
+
 .memo {
     width: 100%;
-    min-height: 90px;
+    min-height: 100px;
     padding: 14px;
     border-radius: 16px;
     border: 1px solid rgba(148, 163, 184, 0.22);
@@ -205,71 +233,16 @@ body {
     line-height: 1.5;
 }
 
-.custom-time-box {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 10px;
-    margin-top: 12px;
-}
+@media (max-width: 560px) {
+    .form-card {
+        padding: 26px;
+    }
 
-.custom-time-input {
-    height: 48px;
-    padding: 0 14px;
-    border-radius: 14px;
-    border: 1px solid rgba(148, 163, 184, 0.22);
-    background: rgba(2, 6, 23, 0.62);
-    color: #f8fafc;
-    font-size: 15px;
-    font-weight: 800;
-    outline: none;
-}
+    .type-grid {
+        grid-template-columns: 1fr;
+    }
 
-.custom-time-input:focus {
-    border-color: rgba(250, 204, 21, 0.65);
-}
-
-.custom-time-btn {
-    height: 48px;
-    padding: 0 16px;
-    border-radius: 14px;
-    border: 0;
-    background: linear-gradient(135deg, #ca8a04, #facc15);
-    color: #111827;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-}
-
-.time-help {
-    margin: 8px 0 0;
-    color: #64748b;
-    font-size: 12px;
-}
-
-.option-card.disabled,
-.option-card.occupied {
-    opacity: 0.45;
-    cursor: not-allowed;
-    background-color: #e5e7eb;
-    border-color: rgba(148, 163, 184, 0.25);
-}
-
-.option-card.disabled:hover,
-.option-card.occupied:hover {
-    transform: none;
-    border-color: rgba(148, 163, 184, 0.25);
-    background-color: #e5e7eb;
-}
-
-.option-card.disabled span,
-.option-card.occupied span {
-    color: #6b7280;
-}
-
-.closed-text {
-    display: inline-block;
-    margin-left: 6px;
-    font-size: 12px;
-    color: #dc2626;
-    font-weight: 900;
+    .button-row {
+        grid-template-columns: 1fr;
+    }
 }

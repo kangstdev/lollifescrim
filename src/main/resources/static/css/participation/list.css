@@ -1,0 +1,237 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+            radial-gradient(circle at top left, rgba(29, 78, 216, 0.45), transparent 34%),
+            radial-gradient(circle at bottom right, rgba(202, 138, 4, 0.28), transparent 30%),
+            linear-gradient(135deg, #050816 0%, #0f172a 50%, #020617 100%);
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-wrap {
+    width: 100%;
+    padding: 24px;
+}
+
+.status-card {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    border-radius: 26px;
+    background: rgba(15, 23, 42, 0.94);
+    box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.status-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.status-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #facc15;
+    letter-spacing: -0.04em;
+}
+
+.status-header p {
+    margin: 8px 0 0;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.refresh-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: rgba(2, 6, 23, 0.62);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    color: #f8fafc;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 6px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    background: rgba(2, 6, 23, 0.55);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.time-tab {
+    height: 42px;
+    border-radius: 12px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-tab.active {
+    color: #111827;
+    background: linear-gradient(135deg, #ca8a04, #facc15);
+}
+
+.line-section {
+    margin-bottom: 14px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: rgba(2, 6, 23, 0.42);
+}
+
+.line-title {
+    min-height: 48px;
+    padding: 0 14px;
+    background: rgba(30, 41, 59, 0.8);
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.line-title span {
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.line-title strong {
+    min-width: 44px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.9);
+    color: #facc15;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.member-list {
+    padding: 12px 14px;
+}
+
+.empty-text {
+    padding: 8px 6px;
+    color: #94a3b8;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.member-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 6px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.member-row:last-child {
+    border-bottom: 0;
+}
+
+.nickname {
+    color: #e2e8f0;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.member-lines {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.line-chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(96, 165, 250, 0.55);
+    color: #bfdbfe;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.line-chip.sub {
+    border-color: rgba(192, 132, 252, 0.6);
+    color: #e9d5ff;
+}
+
+.selected-line {
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.bottom-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.back-btn,
+.join-btn {
+    height: 50px;
+    border-radius: 16px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-btn {
+    background: rgba(2, 6, 23, 0.62);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    color: #f8fafc;
+}
+
+.join-btn {
+    background: linear-gradient(135deg, #ca8a04, #facc15);
+    color: #111827;
+}
+
+@media (max-width: 640px) {
+    .status-card {
+        padding: 24px;
+    }
+
+    .member-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .bottom-actions {
+        grid-template-columns: 1fr;
+    }
+}

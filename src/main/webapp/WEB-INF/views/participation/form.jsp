@@ -7,8 +7,7 @@
     <meta charset="UTF-8">
     <title>참여 신청</title>
 
-        <link rel="stylesheet" href="<c:url value='/css/participation/form.css' />">
-
+    <link rel="stylesheet" href="<c:url value='/css/participation/form.css' />">
 </head>
 <body>
 
@@ -54,7 +53,7 @@
             </div>
         </c:if>
 
-        <form action="/participation" method="post">
+        <form action="/participation" method="post" id="participationForm">
             <input type="hidden" name="participationType" value="${participationType}">
 
             <c:if test="${participationType.name() != 'ARAM'}">
@@ -64,7 +63,13 @@
                     <div class="line-grid">
                         <c:forEach var="line" items="${lines}">
                             <label class="option-card">
-                                <input type="radio" name="selectedLine" value="${line}" required>
+                                <input
+                                        type="radio"
+                                        name="selectedLine"
+                                        value="${line.name()}"
+                                        data-line-name="${line.name()}"
+                                        required
+                                >
 
                                 <span>
                                     <c:choose>
@@ -85,14 +90,39 @@
             <div class="form-group">
                 <label class="form-label">참여 가능 시간</label>
 
-                <div class="time-grid">
+                <div class="time-grid" id="timeGrid">
                     <c:forEach var="time" items="${times}">
-                        <label class="option-card">
-                            <input type="checkbox" name="selectedTimes" value="${time}">
-                            <span>${time}시</span>
+                        <label class="option-card time-option" data-time="${time}">
+                            <input
+                                    type="checkbox"
+                                    name="selectedTimes"
+                                    value="${time}"
+                                    class="time-checkbox"
+                                    data-time="${time}"
+                            >
+                            <span class="time-label">${time}시</span>
                         </label>
                     </c:forEach>
                 </div>
+
+                <div class="custom-time-box">
+                    <input
+                            type="number"
+                            id="customTimeInput"
+                            class="custom-time-input"
+                            min="0"
+                            max="23"
+                            placeholder="예: 19"
+                    >
+
+                    <button type="button" id="addTimeBtn" class="custom-time-btn">
+                        시간 추가
+                    </button>
+                </div>
+
+                <p class="time-help">
+                    원하는 시간이 없으면 숫자만 입력하세요. 예: 19 → 19시
+                </p>
             </div>
 
             <div class="form-group">
@@ -114,6 +144,18 @@
 
     </div>
 </div>
+
+<script>
+    const occupiedSlotKeys = [
+        <c:forEach var="key" items="${occupiedSlotKeys}" varStatus="status">
+            "${key}"<c:if test="${!status.last}">,</c:if>
+        </c:forEach>
+    ];
+
+    const participationType = "${participationType.name()}";
+</script>
+
+<script src="<c:url value='/js/participation/form.js' />"></script>
 
 </body>
 </html>

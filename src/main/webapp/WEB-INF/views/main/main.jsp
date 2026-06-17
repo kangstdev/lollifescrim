@@ -1,7 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -30,45 +29,47 @@
         </div>
 
         <div class="menu-grid">
-            <a class="menu-btn" href="/participation/status">
-                <span class="left">
-                    <span class="icon">📋</span>
-                    <span>내 참여 현황</span>
-                </span>
-                <span>›</span>
+
+            <a class="menu-card" href="/participation/status">
+                <span class="menu-icon">📋</span>
+                <span class="menu-title">내 참여 현황</span>
             </a>
 
-            <a class="menu-btn primary" href="/participation/form?type=NORMAL">
-                <span class="left">
-                    <span class="icon">🔥</span>
-                    <span>내전 참여</span>
-                </span>
-                <span>›</span>
+            <a class="menu-card primary" href="/participation/form?type=NORMAL">
+                <span class="menu-icon">🔥</span>
+                <span class="menu-title">내전 참여</span>
             </a>
 
-            <a class="menu-btn" href="/participation/form?type=FREE">
-                <span class="left">
-                    <span class="icon">🌀</span>
-                    <span>자유내전 참여</span>
-                </span>
-                <span>›</span>
+            <a class="menu-card" href="/participation/form?type=FREE">
+                <span class="menu-icon">🌀</span>
+                <span class="menu-title">자유내전</span>
             </a>
 
-            <a class="menu-btn" href="/participation/form?type=FLEX">
-                <span class="left">
-                    <span class="icon">🏆</span>
-                    <span>자유랭크 파티</span>
-                </span>
-                <span>›</span>
+            <a class="menu-card" href="/participation/form?type=FLEX">
+                <span class="menu-icon">🏆</span>
+                <span class="menu-title">자유랭크</span>
             </a>
 
-            <a class="menu-btn" href="/participation/form?type=ARAM">
-                <span class="left">
-                    <span class="icon">❄️</span>
-                    <span>증바람 참여</span>
-                </span>
-                <span>›</span>
+            <a class="menu-card" href="/participation/form?type=ARAM">
+                <span class="menu-icon">❄️</span>
+                <span class="menu-title">증바람</span>
             </a>
+
+            <a class="menu-card" href="/participation/list?type=NORMAL">
+                <span class="menu-icon">👥</span>
+                <span class="menu-title">참여 현황</span>
+            </a>
+
+            <a class="menu-card" href="/party/list">
+                <span class="menu-icon">📢</span>
+                <span class="menu-title">파티 목록</span>
+            </a>
+
+            <a class="menu-card create" href="/party/form">
+                <span class="menu-icon">➕</span>
+                <span class="menu-title">파티 만들기</span>
+            </a>
+
         </div>
 
         <form class="logout-form" action="/logout" method="post">
