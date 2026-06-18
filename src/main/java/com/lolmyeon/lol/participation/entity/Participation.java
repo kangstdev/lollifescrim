@@ -37,7 +37,7 @@ public class Participation {
 
     // 선택한 라인
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private LolLine selectedLine;
 
     @Column(nullable = false)

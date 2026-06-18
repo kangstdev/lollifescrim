@@ -201,41 +201,78 @@ public class ParticipationService {
             LolLine selectedLine,
             List<String> requestTimes
     ) {
-        // ARAM처럼 라인이 필요 없는 참여 종류는 중복 검사 제외
+        /*
+         * 증바람(ARAM)
+         * - 라인이 없음
+         * - 같은 시간에 5명까지 한 파티
+         * - 지금 단계에서는 5명 초과를 막지 않고, 나중에 화면에서 5명씩 파티를 나누는 방식으로 처리
+         */
+        if (participationType == ParticipationType.ARAM) {
+            return;
+        }
+
+        /*
+         * 라인이 필요한 타입만 여기부터 검사
+         * NORMAL = 일반 내전
+         * FREE = 자유 내전
+         * FLEX = 자유랭크
+         */
         if (!participationType.isLineRequired()) {
             return;
         }
 
-        // 같은 참여종류 + 같은 라인으로 신청된 기존 신청 목록 조회
-        // 예: 일반내전 + MID 신청 목록
+        /*
+         * 타입별 같은 시간 + 같은 라인 허용 인원
+         */
+        int maxCountPerTimeAndLine;
+
+        if (participationType == ParticipationType.NORMAL || participationType == ParticipationType.FREE) {
+            maxCountPerTimeAndLine = 2;
+        } else if (participationType == ParticipationType.FLEX) {
+            maxCountPerTimeAndLine = 1;
+        } else {
+            maxCountPerTimeAndLine = 1;
+        }
+
+        /*
+         * 같은 참여종류 + 같은 라인으로 신청된 기존 신청 목록 조회
+         */
         List<Participation> sameLineParticipations =
                 participationRepository.findAllByParticipationTypeAndSelectedLine(
                         participationType,
                         selectedLine
                 );
 
-        for (Participation existingParticipation : sameLineParticipations) {
+        /*
+         * 사용자가 신청하려는 시간 하나씩 검사
+         */
+        for (String requestTime : requestTimes) {
+            int count = 0;
 
-            // 본인이 기존에 신청한 같은 참여종류는 수정 가능해야 하므로 중복 검사에서 제외
-            if (existingParticipation.getMember().getId().equals(member.getId())) {
-                continue;
-            }
+            for (Participation existingParticipation : sameLineParticipations) {
+                /*
+                 * 본인이 기존에 신청한 같은 참여종류는 수정 가능해야 하므로 제외
+                 */
+                if (existingParticipation.getMember().getId().equals(member.getId())) {
+                    continue;
+                }
 
-            // 기존 신청자의 시간 문자열을 배열로 분리
-            // 예: "20,21" -> ["20", "21"]
-            String[] existingTimes = existingParticipation.getSelectedTimes().split(",");
+                String[] existingTimes = existingParticipation.getSelectedTimes().split(",");
 
-            // 기존 신청 시간과 새로 신청하려는 시간을 하나씩 비교
-            for (String existingTime : existingTimes) {
-                for (String requestTime : requestTimes) {
-
-                    // 공백 제거 후 시간이 같으면 중복 신청으로 판단
+                for (String existingTime : existingTimes) {
                     if (existingTime.trim().equals(requestTime.trim())) {
-                        throw new IllegalArgumentException(
-                                "이미 해당 시간에 같은 라인으로 신청한 사람이 있습니다."
-                        );
+                        count++;
                     }
                 }
+            }
+
+            /*
+             * 이미 허용 인원만큼 차 있으면 신청 불가
+             */
+            if (count >= maxCountPerTimeAndLine) {
+                throw new IllegalArgumentException(
+                        "이미 해당 시간에 해당 라인 신청 인원이 가득 찼습니다."
+                );
             }
         }
     }

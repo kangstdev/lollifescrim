@@ -104,6 +104,23 @@
                     </form:select>
                     <form:errors path="subLine" cssClass="field-error" />
                 </div>
+
+             <div class="form-group">
+                 <label for="tier">티어</label>
+                 <select id="tier" name="tier" class="form-input" required>
+                     <option value="">선택</option>
+                     <option value="IRON">아이언</option>
+                     <option value="BRONZE">브론즈</option>
+                     <option value="SILVER">실버</option>
+                     <option value="GOLD">골드</option>
+                     <option value="PLATINUM">플래티넘</option>
+                     <option value="EMERALD">에메랄드</option>
+                     <option value="DIAMOND">다이아몬드</option>
+                     <option value="MASTER">마스터</option>
+                     <option value="GRANDMASTER">그랜드마스터</option>
+                     <option value="CHALLENGER">챌린저</option>
+                 </select>
+             </div>
             </div>
 
             <button type="submit" class="submit-btn">가입하기</button>

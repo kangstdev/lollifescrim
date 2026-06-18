@@ -14,7 +14,7 @@ public class LoginMember {
      private LolLine mainLine;
      private LolLine subLine;
      private MemberRole role;
-
+     private String tier;
 
 
 }

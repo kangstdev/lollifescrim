@@ -113,6 +113,8 @@
                                 </c:choose>
                             </span>
 
+
+
                             <strong>${lineCount}명</strong>
                         </div>
 
@@ -149,6 +151,10 @@
                                                             <c:when test="${participation.member.subLine.name() == 'SUPPORT'}">서포터</c:when>
                                                             <c:otherwise>${participation.member.subLine}</c:otherwise>
                                                         </c:choose>
+                                                    </span>
+
+                                                    <span class="line-chip">
+                                                        ${participation.member.tier}
                                                     </span>
                                                 </div>
 

@@ -41,6 +41,9 @@ public class Member {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "tier" , nullable = false)
+    private String tier;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();

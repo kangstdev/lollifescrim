@@ -31,11 +31,14 @@ public class MemberService {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
+
+
         Member member = Member.builder()
                 .nickname(request.getNickname())
                 .password(request.getPassword())
                 .mainLine(request.getMainLine())
                 .subLine(request.getSubLine())
+                .tier(request.getTier())
                 .role(MemberRole.USER)
                 .build();
 
@@ -55,7 +58,8 @@ public class MemberService {
                 member.getNickname(),
                 member.getMainLine(),
                 member.getSubLine(),
-                member.getRole()
+                member.getRole(),
+                member.getTier()
         );
     }
 }

@@ -25,6 +25,8 @@
             <p class="line-info">
                 주라인 <strong>${loginMember.mainLine}</strong>
                 · 부라인 <strong>${loginMember.subLine}</strong>
+                · 티어 <strong>${loginMember.tier}</strong>
+
             </p>
         </div>
 
@@ -35,10 +37,17 @@
                 <span class="menu-title">내 참여 현황</span>
             </a>
 
+             <a class="menu-card create" href="/party/form">
+                 <span class="menu-icon">➕</span>
+                  <span class="menu-title">파티 만들기</span>
+             </a>
+
+
             <a class="menu-card primary" href="/participation/form?type=NORMAL">
                 <span class="menu-icon">🔥</span>
                 <span class="menu-title">내전 참여</span>
             </a>
+
 
             <a class="menu-card" href="/participation/form?type=FREE">
                 <span class="menu-icon">🌀</span>
@@ -65,10 +74,7 @@
                 <span class="menu-title">파티 목록</span>
             </a>
 
-            <a class="menu-card create" href="/party/form">
-                <span class="menu-icon">➕</span>
-                <span class="menu-title">파티 만들기</span>
-            </a>
+
 
         </div>
 

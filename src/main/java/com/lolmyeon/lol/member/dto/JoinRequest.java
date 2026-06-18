@@ -24,4 +24,7 @@ public class JoinRequest {
 
     @NotNull(message = "부라인은 필수입니다.")
     private LolLine subLine;
+
+    @NotBlank(message = "티어를 선택해주세요.")
+    private String tier;
 }
