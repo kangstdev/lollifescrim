@@ -21,17 +21,37 @@
                 <p>시간별 · 라인별 신청자를 한눈에 확인할 수 있습니다.</p>
             </div>
 
-            <a href="/participation/list?type=${participationType}&time=${selectedTime}" class="refresh-btn">
-                ↻
+            <jsp:include page="/WEB-INF/views/common/share-button.jsp" />
+        </div>
+
+        <!-- 항목 탭: 내전 / 자유내전 / 자유랭크 / 증바람 -->
+        <div class="type-tab-row">
+            <a href="/participation/list?type=NORMAL&time=${selectedTime}"
+               class="type-tab ${participationType.name() == 'NORMAL' ? 'active' : ''}">
+                내전
+            </a>
+
+            <a href="/participation/list?type=FREE&time=${selectedTime}"
+               class="type-tab ${participationType.name() == 'FREE' ? 'active' : ''}">
+                자유내전
+            </a>
+
+            <a href="/participation/list?type=FLEX&time=${selectedTime}"
+               class="type-tab ${participationType.name() == 'FLEX' ? 'active' : ''}">
+                자유랭크
+            </a>
+
+            <a href="/participation/list?type=ARAM&time=${selectedTime}"
+               class="type-tab ${participationType.name() == 'ARAM' ? 'active' : ''}">
+                증바람
             </a>
         </div>
 
+        <!-- 시간 탭: 오후 8시 / 9시 / 10시 -->
         <div class="tab-row">
             <c:forEach var="time" items="${times}">
-                <a
-                    href="/participation/list?type=${participationType}&time=${time}"
-                    class="time-tab ${selectedTime == time ? 'active' : ''}"
-                >
+                <a href="/participation/list?type=${participationType.name()}&time=${time}"
+                   class="time-tab ${selectedTime == time ? 'active' : ''}">
                     <c:choose>
                         <c:when test="${time == '20'}">오후 8시</c:when>
                         <c:when test="${time == '21'}">오후 9시</c:when>
@@ -43,6 +63,7 @@
         </div>
 
         <c:choose>
+            <%-- 증바람은 라인 없이 전체 인원만 출력 --%>
             <c:when test="${participationType.name() == 'ARAM'}">
 
                 <div class="line-section">
@@ -72,6 +93,36 @@
 
                                     <div class="member-row">
                                         <span class="nickname">${participation.member.nickname}</span>
+
+                                        <div class="member-lines">
+                                            <span class="line-chip">
+                                                <c:choose>
+                                                    <c:when test="${participation.member.mainLine.name() == 'TOP'}">탑</c:when>
+                                                    <c:when test="${participation.member.mainLine.name() == 'JUNGLE'}">정글</c:when>
+                                                    <c:when test="${participation.member.mainLine.name() == 'MID'}">미드</c:when>
+                                                    <c:when test="${participation.member.mainLine.name() == 'AD'}">원딜</c:when>
+                                                    <c:when test="${participation.member.mainLine.name() == 'SUPPORT'}">서포터</c:when>
+                                                    <c:otherwise>${participation.member.mainLine}</c:otherwise>
+                                                </c:choose>
+                                            </span>
+
+                                            <span class="line-chip sub">
+                                                <c:choose>
+                                                    <c:when test="${participation.member.subLine.name() == 'TOP'}">탑</c:when>
+                                                    <c:when test="${participation.member.subLine.name() == 'JUNGLE'}">정글</c:when>
+                                                    <c:when test="${participation.member.subLine.name() == 'MID'}">미드</c:when>
+                                                    <c:when test="${participation.member.subLine.name() == 'AD'}">원딜</c:when>
+                                                    <c:when test="${participation.member.subLine.name() == 'SUPPORT'}">서포터</c:when>
+                                                    <c:otherwise>${participation.member.subLine}</c:otherwise>
+                                                </c:choose>
+                                            </span>
+
+                                            <span class="line-chip">
+                                                ${participation.member.tier}
+                                            </span>
+                                        </div>
+
+                                        <span class="selected-line">증바람 신청</span>
                                     </div>
                                 </c:if>
                             </c:forEach>
@@ -85,6 +136,7 @@
 
             </c:when>
 
+            <%-- 내전 / 자유내전 / 자유랭크는 라인별 출력 --%>
             <c:otherwise>
 
                 <c:forEach var="line" items="${lines}">
@@ -112,8 +164,6 @@
                                     <c:otherwise>${line}</c:otherwise>
                                 </c:choose>
                             </span>
-
-
 
                             <strong>${lineCount}명</strong>
                         </div>
@@ -186,7 +236,7 @@
 
         <div class="bottom-actions">
             <a href="/main" class="back-btn">메인으로 돌아가기</a>
-            <a href="/participation/form?type=${participationType}" class="join-btn">신청하러 가기</a>
+            <a href="/participation/form?type=${participationType.name()}" class="join-btn">신청하러 가기</a>
         </div>
 
     </div>
