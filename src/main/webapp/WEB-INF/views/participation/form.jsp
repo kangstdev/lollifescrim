@@ -77,6 +77,7 @@
                                         <c:when test="${line.name() == 'JUNGLE'}">정글</c:when>
                                         <c:when test="${line.name() == 'MID'}">미드</c:when>
                                         <c:when test="${line.name() == 'AD'}">원딜</c:when>
+                                        <c:when test="${line.name() == 'ADC'}">원딜</c:when>
                                         <c:when test="${line.name() == 'SUPPORT'}">서폿</c:when>
                                         <c:otherwise>${line}</c:otherwise>
                                     </c:choose>
@@ -90,44 +91,67 @@
             <div class="form-group">
                 <label class="form-label">참여 가능 시간</label>
 
-                <div class="time-grid" id="timeGrid">
-                    <c:forEach var="time" items="${times}">
-                        <label class="option-card time-option" data-time="${time}">
-                            <input
-                                    type="checkbox"
-                                    name="selectedTimes"
-                                    value="${time}"
-                                    class="time-checkbox"
-                                    data-time="${time}"
-                            >
-                            <span class="time-label">${time}시</span>
-                        </label>
-                    </c:forEach>
+                <div class="time-section">
+                    <p class="time-section-title">고정 시간</p>
+
+                    <div class="fixed-time-grid" id="timeGrid">
+                        <c:forEach var="time" items="${times}">
+                            <label class="option-card time-option" data-time="${time}">
+                                <input
+                                        type="checkbox"
+                                        name="selectedTimes"
+                                        value="${time}"
+                                        class="time-checkbox"
+                                        data-time="${time}"
+                                >
+                                <span class="time-label">${time}시</span>
+                            </label>
+                        </c:forEach>
+                    </div>
                 </div>
 
-                <div class="custom-time-box">
-                    <input
-                            type="number"
-                            id="customTimeInput"
-                            class="custom-time-input"
-                            min="0"
-                            max="23"
-                            placeholder="예: 19"
-                    >
+                <div class="time-section">
+                    <p class="time-section-title">사용자 설정 시간</p>
 
-                    <button type="button" id="addTimeBtn" class="custom-time-btn">
-                        시간 추가
-                    </button>
+                    <c:choose>
+                        <c:when test="${empty partyTimes}">
+                            <div class="empty-time-box">
+                                아직 만들어진 파티 시간이 없습니다.
+                            </div>
+                        </c:when>
+
+                        <c:otherwise>
+                            <div class="custom-party-time-grid">
+                                <c:forEach var="time" items="${partyTimes}">
+                                    <label class="option-card time-option" data-time="${time}">
+                                        <input
+                                                type="checkbox"
+                                                name="selectedTimes"
+                                                value="${time}"
+                                                class="time-checkbox"
+                                                data-time="${time}"
+                                        >
+                                        <span class="time-label">${time}시</span>
+                                    </label>
+                                </c:forEach>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 
                 <p class="time-help">
-                    원하는 시간이 없으면 숫자만 입력하세요. 예: 19 → 19시
+                    고정 시간 또는 파티장이 만든 시간을 선택해주세요.
                 </p>
             </div>
 
             <div class="form-group">
-                <label class="form-label">메모</label>
-                <textarea class="memo" name="memo" placeholder="전달할 내용이 있으면 적어주세요."></textarea>
+                <label class="form-label">현재 선택한 시간 현황</label>
+
+                <div class="current-status-box" id="currentStatusBox">
+                    <p class="status-empty-text">
+                        시간을 선택하면 해당 시간의 참여 현황이 표시됩니다.
+                    </p>
+                </div>
             </div>
 
             <div class="button-row">

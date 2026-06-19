@@ -44,6 +44,14 @@ public class Member {
     @Column(name = "tier" , nullable = false)
     private String tier;
 
+    /*
+     * 탈퇴/삭제 처리 여부
+     *
+     * 실제 DB 삭제가 아니라 비활성화 처리합니다.
+     */
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
@@ -52,4 +60,26 @@ public class Member {
             this.role = MemberRole.USER;
         }
     }
+
+    public void updateInfo(
+            String nickname,
+            String password,
+            String tier,
+            LolLine mainLine,
+            LolLine subLine
+    ) {
+        this.nickname = nickname;
+        this.password = password;
+        this.tier = tier;
+        this.mainLine = mainLine;
+        this.subLine = subLine;
+    }
+
+    public void deactivate() {
+        this.deleted = true;
+        this.nickname = "탈퇴회원_" + this.id;
+        this.password = "DELETED_ACCOUNT";
+    }
+
+
 }

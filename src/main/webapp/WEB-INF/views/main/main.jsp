@@ -20,15 +20,18 @@
             <p>내전 · 자유랭크 · 증바람 참여 신청</p>
         </div>
 
-        <div class="profile-box">
-            <p class="nickname">${loginMember.nickname}님</p>
-            <p class="line-info">
-                주라인 <strong>${loginMember.mainLine}</strong>
-                · 부라인 <strong>${loginMember.subLine}</strong>
-                · 티어 <strong>${loginMember.tier}</strong>
+<div class="profile-box">
+    <a href="/member/edit" class="profile-edit-btn" title="개인정보 수정">
+        수정
+    </a>
 
-            </p>
-        </div>
+    <p class="nickname">${loginMember.nickname}님</p>
+    <p class="line-info">
+        주라인 <strong>${loginMember.mainLine}</strong>
+        · 부라인 <strong>${loginMember.subLine}</strong>
+        · 티어 <strong>${loginMember.tier}</strong>
+    </p>
+</div>
 
         <div class="menu-grid">
 
@@ -69,13 +72,10 @@
                 <span class="menu-title">참여 현황</span>
             </a>
 
-            <a class="menu-card" href="/party/list">
-                <span class="menu-icon">📢</span>
-                <span class="menu-title">파티 목록</span>
+            <a class="menu-card" href="/notice/list">
+                <span class="menu-icon">📝</span>
+                <span class="menu-title">공지/건의</span>
             </a>
-
-
-
         </div>
 
         <form class="logout-form" action="/logout" method="post">

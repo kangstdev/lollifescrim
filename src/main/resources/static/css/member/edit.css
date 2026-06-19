@@ -1,0 +1,124 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, "Noto Sans KR", sans-serif;
+    background: #f4f6fb;
+    color: #222;
+}
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 16px;
+}
+
+.edit-card {
+    width: 100%;
+    max-width: 480px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.edit-card h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.description {
+    margin: 0 0 28px;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.input {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid #d9dce7;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+}
+
+.input:focus {
+    border-color: #5b6cff;
+    box-shadow: 0 0 0 3px rgba(91, 108, 255, 0.12);
+}
+
+.field-error {
+    color: #e03131;
+    font-size: 13px;
+}
+
+.error-box {
+    margin-bottom: 18px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #fff0f0;
+    color: #e03131;
+    font-size: 14px;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn {
+    flex: 1;
+    height: 44px;
+    border-radius: 10px;
+    border: none;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-btn {
+    background: #edf0f7;
+    color: #333;
+}
+
+.save-btn {
+    background: #5b6cff;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #4958e8;
+}
+
+.cancel-btn:hover {
+    background: #dde2ee;
+}

@@ -1,4 +1,4 @@
-package com.lolmyeon.lol.scrim;
+package com.lolmyeon.lol.common;
 
 import com.lolmyeon.lol.member.dto.LoginMember;
 import jakarta.servlet.http.HttpSession;

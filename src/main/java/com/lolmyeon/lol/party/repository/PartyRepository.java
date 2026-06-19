@@ -1,6 +1,6 @@
 package com.lolmyeon.lol.party.repository;
 
-import com.lolmyeon.lol.party.entity.Party;
+import com.lolmyeon.lol.party.entiry.Party;
 import com.lolmyeon.lol.participation.entity.ParticipationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

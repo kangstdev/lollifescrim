@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import com.lolmyeon.lol.member.dto.EditMemberRequest;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -87,6 +89,8 @@ public class MemberController {
         return "redirect:/login";
     }
 
+
+
     /**
      * 로그인 화면
      */
@@ -137,6 +141,10 @@ public class MemberController {
             return "redirect:/login";
         }
 
+        if ("ADMIN".equals(String.valueOf(loginMember.getRole()))) {
+            return "redirect:/admin";
+        }
+
         model.addAttribute("loginMember", loginMember);
 
         return "main/main";
@@ -149,5 +157,64 @@ public class MemberController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+
+    /**
+     * 내 정보 수정 화면
+     */
+    @GetMapping("/member/edit")
+    public String editForm(HttpSession session, Model model) {
+        LoginMember loginMember = (LoginMember) session.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            return "redirect:/login";
+        }
+
+        EditMemberRequest editMemberRequest = memberService.getEditMember(loginMember.getId());
+
+        model.addAttribute("editMemberRequest", editMemberRequest);
+        model.addAttribute("lines", LolLine.values());
+
+        return "member/edit";
+    }
+
+
+    /**
+     * 내 정보 수정 처리
+     */
+    @PostMapping("/member/edit")
+    public String edit(
+            @Valid @ModelAttribute EditMemberRequest editMemberRequest,
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model
+    ) {
+        LoginMember loginMember = (LoginMember) session.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("lines", LolLine.values());
+
+        if (bindingResult.hasErrors()) {
+            return "member/edit";
+        }
+
+        try {
+            LoginMember updatedLoginMember = memberService.editMember(
+                    loginMember.getId(),
+                    editMemberRequest
+            );
+
+            session.setAttribute("loginMember", updatedLoginMember);
+
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "member/edit";
+        }
+
+        return "redirect:/main";
     }
 }

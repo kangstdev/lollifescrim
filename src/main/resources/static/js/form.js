@@ -3,8 +3,8 @@
  *
  * 담당 기능:
  * 1. 이미 신청된 시간 마감 처리
- * 2. 사용자가 원하는 시간 직접 추가
- * 3. 신청 시 시간 최소 1개 선택 검사
+ * 2. 신청 시 시간 최소 1개 선택 검사
+ * 3. 시간 선택 시 현재 선택 시간 현황 영역 표시
  */
 
 /*
@@ -13,20 +13,13 @@
 const lineRadios = document.querySelectorAll("input[name='selectedLine']");
 
 /*
- * 시간 버튼이 들어가는 영역
+ * 현재 선택한 시간 현황 박스
  */
-const timeGrid = document.getElementById("timeGrid");
+const currentStatusBox = document.getElementById("currentStatusBox");
 
 /*
- * 직접 시간 추가 input / button
- */
-const customTimeInput = document.getElementById("customTimeInput");
-const addTimeBtn = document.getElementById("addTimeBtn");
-
-/*
- * 시간 버튼은 사용자가 직접 추가할 수 있습니다.
- * 그래서 처음에 한 번만 가져오면 새로 추가된 시간은 인식하지 못합니다.
- * 필요할 때마다 다시 찾도록 함수로 만들었습니다.
+ * 시간 버튼은 고정 시간 + 사용자 설정 시간이 같이 있을 수 있습니다.
+ * 그래서 매번 전체 .time-option을 다시 찾습니다.
  */
 function getTimeOptions() {
     return document.querySelectorAll(".time-option");
@@ -43,6 +36,10 @@ function resetTimeOptions() {
 
     timeOptions.forEach(function (label) {
         const checkbox = label.querySelector(".time-checkbox");
+
+        if (!checkbox) {
+            return;
+        }
 
         checkbox.disabled = false;
 
@@ -79,8 +76,12 @@ function applyOccupiedTimes(selectedLine) {
     timeOptions.forEach(function (label) {
         const checkbox = label.querySelector(".time-checkbox");
         const timeLabel = label.querySelector(".time-label");
-        const time = checkbox.dataset.time;
 
+        if (!checkbox || !timeLabel) {
+            return;
+        }
+
+        const time = checkbox.dataset.time;
         const slotKey = time + "_" + selectedLine;
 
         if (occupiedSlotKeys.includes(slotKey)) {
@@ -113,81 +114,54 @@ function getSelectedLine() {
 }
 
 /*
- * 사용자가 직접 시간 추가
- *
- * 예:
- * 19 입력 후 시간 추가 클릭
- * → 19시 버튼 생성
- * → 자동 체크
- * → 신청 시 selectedTimes=19 로 서버에 전달
+ * 현재 체크된 시간 목록 가져오기
  */
-function addCustomTime() {
-    const time = customTimeInput.value.trim();
+function getCheckedTimes() {
+    return Array.from(
+        document.querySelectorAll("input[name='selectedTimes']:checked")
+    ).map(function (checkbox) {
+        return checkbox.value;
+    });
+}
 
-    if (time === "") {
-        alert("추가할 시간을 입력해주세요.");
+/*
+ * 시간 선택 시 아래 현황 박스 갱신
+ *
+ * 지금은 실제 참여자 목록 조회 전 단계라서,
+ * 선택한 시간만 표시합니다.
+ *
+ * 다음 단계에서 이 부분에
+ * 라인별 참여자 / 증바람 참여자 목록을 넣으면 됩니다.
+ */
+function updateCurrentStatusBox() {
+    if (!currentStatusBox) {
         return;
     }
 
-    const timeNumber = Number(time);
+    const checkedTimes = getCheckedTimes();
 
-    if (Number.isNaN(timeNumber) || timeNumber < 0 || timeNumber > 23) {
-        alert("시간은 0부터 23 사이 숫자로 입력해주세요.");
+    if (checkedTimes.length === 0) {
+        currentStatusBox.innerHTML =
+            "<p class='status-empty-text'>시간을 선택하면 해당 시간의 참여 현황이 표시됩니다.</p>";
         return;
     }
 
-    /*
-     * 09처럼 입력해도 9로 저장합니다.
-     */
-    const normalizedTime = String(timeNumber);
+    const selectedTimeText = checkedTimes
+        .map(function (time) {
+            return time + "시";
+        })
+        .join(", ");
 
-    /*
-     * 이미 같은 시간이 있으면 새로 만들지 않고 기존 시간 체크
-     */
-    const alreadyExists = document.querySelector(
-        "input[name='selectedTimes'][value='" + normalizedTime + "']"
-    );
-
-    if (alreadyExists) {
-        alert(normalizedTime + "시는 이미 있습니다.");
-
-        if (!alreadyExists.disabled) {
-            alreadyExists.checked = true;
-        }
-
-        customTimeInput.value = "";
+    if (participationType === "ARAM") {
+        currentStatusBox.innerHTML =
+            "<p class='status-title'>" + selectedTimeText + " 증바람 참여자</p>" +
+            "<p class='status-empty-text'>다음 단계에서 이 시간대 참여자 닉네임이 표시됩니다.</p>";
         return;
     }
 
-    /*
-     * 새 시간 버튼 생성
-     */
-    const label = document.createElement("label");
-    label.className = "option-card time-option";
-    label.dataset.time = normalizedTime;
-
-    label.innerHTML =
-        "<input type='checkbox' " +
-        "name='selectedTimes' " +
-        "value='" + normalizedTime + "' " +
-        "class='time-checkbox' " +
-        "data-time='" + normalizedTime + "' " +
-        "checked>" +
-        "<span class='time-label'>" + normalizedTime + "시</span>";
-
-    timeGrid.appendChild(label);
-
-    /*
-     * 새로 추가한 시간도 현재 선택한 라인 기준으로
-     * 마감 여부를 다시 계산합니다.
-     */
-    const selectedLine = getSelectedLine();
-
-    if (selectedLine) {
-        applyOccupiedTimes(selectedLine);
-    }
-
-    customTimeInput.value = "";
+    currentStatusBox.innerHTML =
+        "<p class='status-title'>" + selectedTimeText + " 참여 현황</p>" +
+        "<p class='status-empty-text'>다음 단계에서 이 시간대 라인별 참여 현황이 표시됩니다.</p>";
 }
 
 /*
@@ -197,27 +171,24 @@ lineRadios.forEach(function (radio) {
     radio.addEventListener("change", function () {
         const selectedLine = this.dataset.lineName;
         applyOccupiedTimes(selectedLine);
+        updateCurrentStatusBox();
     });
 });
 
 /*
- * 시간 추가 버튼 클릭
+ * 시간 버튼을 누를 때마다 현재 선택한 시간 현황 박스 갱신
  */
-if (addTimeBtn) {
-    addTimeBtn.addEventListener("click", addCustomTime);
-}
+getTimeOptions().forEach(function (label) {
+    const checkbox = label.querySelector(".time-checkbox");
 
-/*
- * 시간 입력 후 Enter를 눌러도 추가
- */
-if (customTimeInput) {
-    customTimeInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            addCustomTime();
-        }
+    if (!checkbox) {
+        return;
+    }
+
+    checkbox.addEventListener("change", function () {
+        updateCurrentStatusBox();
     });
-}
+});
 
 /*
  * 신청 버튼 클릭 시 시간 최소 1개 선택 검사
@@ -242,3 +213,8 @@ if (participationType !== "ARAM") {
         applyOccupiedTimes(selectedLine);
     }
 }
+
+/*
+ * 페이지 진입 시 현황 박스 초기화
+ */
+updateCurrentStatusBox();

@@ -66,6 +66,28 @@
                 </div>
             </div>
 
+            <div class="form-group" id="creatorLineGroup">
+                <label class="form-label">내 라인 선택</label>
+
+                <div class="line-grid">
+                    <c:forEach var="line" items="${lines}">
+                        <label class="option-card line-option">
+                            <input
+                                    type="radio"
+                                    name="creatorLine"
+                                    value="${line.name()}"
+                                    <c:if test="${creatorLine == line}">checked</c:if>
+                            >
+                            <span>${line}</span>
+                        </label>
+                    </c:forEach>
+                </div>
+
+                <p class="help-text">
+                    내전, 자유내전, 자유랭크는 파티장이 본인 라인을 선택해야 합니다.
+                </p>
+            </div>
+
             <div class="form-group">
                 <label class="form-label">파티 시간</label>
 
@@ -116,11 +138,48 @@
         </form>
 
         <div class="notice">
-            만든 파티는 파티 목록에서 다른 사람들이 확인할 수 있습니다.
+            만든 파티는 해당 항목별 참여 현황에서 확인할 수 있습니다.
         </div>
 
     </div>
 </div>
+
+<script>
+    const typeInputs = document.querySelectorAll("input[name='participationType']");
+    const creatorLineGroup = document.getElementById("creatorLineGroup");
+    const creatorLineInputs = document.querySelectorAll("input[name='creatorLine']");
+
+    function updateCreatorLineVisibility() {
+        const checkedType = document.querySelector("input[name='participationType']:checked");
+
+        if (!checkedType) {
+            creatorLineGroup.style.display = "none";
+            creatorLineInputs.forEach(input => {
+                input.required = false;
+            });
+            return;
+        }
+
+        if (checkedType.value === "ARAM") {
+            creatorLineGroup.style.display = "none";
+            creatorLineInputs.forEach(input => {
+                input.checked = false;
+                input.required = false;
+            });
+        } else {
+            creatorLineGroup.style.display = "block";
+            creatorLineInputs.forEach(input => {
+                input.required = true;
+            });
+        }
+    }
+
+    typeInputs.forEach(input => {
+        input.addEventListener("change", updateCreatorLineVisibility);
+    });
+
+    updateCreatorLineVisibility();
+</script>
 
 </body>
 </html>
