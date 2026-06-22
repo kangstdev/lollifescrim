@@ -147,6 +147,9 @@ public class ParticipationController {
 
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("participations", participationService.findMyParticipations(loginMember.getId()));
+        model.addAttribute("waitingParticipations",
+                waitingParticipationRepository.findAllByMemberIdOrderByCreatedAtDesc(loginMember.getId())
+        );
 
         return "participation/status";
     }

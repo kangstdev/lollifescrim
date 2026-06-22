@@ -15,6 +15,8 @@ public interface WaitingParticipationRepository extends JpaRepository<WaitingPar
             String selectedTime
     );
 
+    List<WaitingParticipation> findAllByMemberIdOrderByCreatedAtDesc(Long memberId);
+
     List<WaitingParticipation> findAllByMemberOrderByCreatedAtDesc(Member member);
 
     Optional<WaitingParticipation> findByMemberAndParticipationTypeAndSelectedTime(
