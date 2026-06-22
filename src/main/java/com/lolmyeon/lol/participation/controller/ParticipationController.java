@@ -3,9 +3,12 @@ package com.lolmyeon.lol.participation.controller;
 import com.lolmyeon.lol.common.LolLine;
 import com.lolmyeon.lol.member.dto.LoginMember;
 import com.lolmyeon.lol.participation.dto.ParticipationRequest;
+import com.lolmyeon.lol.participation.entity.Participation;
 import com.lolmyeon.lol.participation.entity.ParticipationType;
 import com.lolmyeon.lol.participation.service.ParticipationService;
 import com.lolmyeon.lol.party.service.PartyService;
+import com.lolmyeon.lol.waiting.entity.WaitingParticipation;
+import com.lolmyeon.lol.waiting.repository.WaitingParticipationRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
@@ -23,6 +31,7 @@ public class ParticipationController {
 
     private final ParticipationService participationService;
     private final PartyService partyService;
+    private final WaitingParticipationRepository waitingParticipationRepository;
 
     /**
      * 참여 신청 화면
@@ -48,28 +57,13 @@ public class ParticipationController {
         ParticipationRequest request = new ParticipationRequest();
         request.setParticipationType(type);
 
-        Set<String> occupiedSlotKeys =
-                participationService.findOccupiedSlotKeys(type, loginMember.getId());
-
-        model.addAttribute("loginMember", loginMember);
-        model.addAttribute("participationRequest", request);
-        model.addAttribute("participationType", type);
-        model.addAttribute("lines", LolLine.values());
-        model.addAttribute("times", getDefaultTimes());
-
-        /*
-         * 파티 만들기에서 생성된 시간
-         *
-         * 예:
-         * FLEX 19시 파티 생성
-         * → 자유랭크 참여 신청 화면의 사용자 설정 시간에 19시 표시
-         */
-        model.addAttribute("partyTimes", partyService.findPartyTimesByType(type));
-
-        /*
-         * 이미 신청된 시간/라인 마감 처리용 데이터
-         */
-        model.addAttribute("occupiedSlotKeys", occupiedSlotKeys);
+        addParticipationFormAttributes(
+                model,
+                loginMember,
+                request,
+                type,
+                null
+        );
 
         return "participation/form";
     }
@@ -226,8 +220,8 @@ public class ParticipationController {
      * form.jsp로 다시 돌아갈 때 필요한 공통 model 데이터
      *
      * 검증 실패 / 서비스 예외 발생 시에도
-     * lines, times, partyTimes, occupiedSlotKeys가 없으면 화면이 깨질 수 있어서
-     * 공통 메서드로 묶었습니다.
+     * lines, times, partyTimes, occupiedSlotKeys, fullTimes, waitingMap이 없으면
+     * 화면이 깨질 수 있어서 공통 메서드로 묶었습니다.
      */
     private void addParticipationFormAttributes(
             Model model,
@@ -242,18 +236,108 @@ public class ParticipationController {
                         loginMember.getId()
                 );
 
+        String[] defaultTimes = getDefaultTimes();
+
+        /*
+         * partyService.findPartyTimesByType() 반환 타입이 List든 Set이든 처리되게
+         * new ArrayList<>()로 감싸서 List로 맞춥니다.
+         */
+        List<String> partyTimes = new ArrayList<>(
+                partyService.findPartyTimesByType(participationType)
+        );
+
+        List<String> allTimes = new ArrayList<>();
+        allTimes.addAll(Arrays.asList(defaultTimes));
+        allTimes.addAll(partyTimes);
+
+        List<String> fullTimes = findFullTimes(participationType, allTimes);
+        Map<String, List<WaitingParticipation>> waitingMap = findWaitingMap(participationType);
+
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("participationRequest", participationRequest);
         model.addAttribute("participationType", participationType);
         model.addAttribute("lines", LolLine.values());
-        model.addAttribute("times", getDefaultTimes());
-        model.addAttribute("partyTimes", partyService.findPartyTimesByType(participationType));
+        model.addAttribute("times", defaultTimes);
+        model.addAttribute("partyTimes", partyTimes);
         model.addAttribute("occupiedSlotKeys", occupiedSlotKeys);
+
+        /*
+         * 대기 신청용 데이터
+         */
+        model.addAttribute("fullTimes", fullTimes);
+        model.addAttribute("waitingMap", waitingMap);
 
         if (errorMessage != null) {
             model.addAttribute("errorMessage", errorMessage);
         }
     }
+
+    /**
+     * 인원이 가득 찬 시간 찾기
+     *
+     * 현재 1차 버전에서는 항목 상관없이
+     * 해당 시간 신청자가 5명 이상이면 마감으로 판단합니다.
+     *
+     * 예:
+     * 20시 신청자 5명 이상
+     * → 20시 대기 신청 가능
+     */
+    private List<String> findFullTimes(
+            ParticipationType type,
+            List<String> times
+    ) {
+        List<Participation> participations = participationService.findByType(type);
+
+        List<String> fullTimes = new ArrayList<>();
+
+        int maxCount = getMaxParticipantCount(type);
+
+        for (String time : times) {
+            long count = participations.stream()
+                    .filter(p -> p.getSelectedTimes() != null)
+                    .filter(p -> Arrays.asList(p.getSelectedTimes().split(",")).contains(time))
+                    .count();
+
+            if (count >= maxCount) {
+                fullTimes.add(time);
+            }
+        }
+
+        return fullTimes;
+    }
+
+    private int getMaxParticipantCount(ParticipationType type) {
+        if (type == ParticipationType.NORMAL || type == ParticipationType.FREE) {
+            return 10;
+        }
+
+        return 5;
+    }
+
+    /**
+     * 현재 항목의 대기자를 시간별로 묶기
+     *
+     * 예:
+     * waitingMap.get("20")
+     * → 20시 대기자 목록
+     */
+    private Map<String, List<WaitingParticipation>> findWaitingMap(
+            ParticipationType type
+    ) {
+        List<WaitingParticipation> waitingList =
+                waitingParticipationRepository.findAllByParticipationTypeOrderBySelectedTimeAscCreatedAtAsc(type);
+
+        Map<String, List<WaitingParticipation>> waitingMap = new LinkedHashMap<>();
+
+        for (WaitingParticipation waiting : waitingList) {
+            waitingMap
+                    .computeIfAbsent(waiting.getSelectedTime(), key -> new ArrayList<>())
+                    .add(waiting);
+        }
+
+        return waitingMap;
+    }
+
     /**
      * 기본 참여 가능 시간
      */

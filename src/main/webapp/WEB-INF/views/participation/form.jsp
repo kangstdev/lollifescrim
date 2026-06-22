@@ -53,6 +53,24 @@
             </div>
         </c:if>
 
+        <c:if test="${param.waitingSuccess == 'true'}">
+            <div class="success-box">
+                대기 신청이 완료되었습니다.
+            </div>
+        </c:if>
+
+        <c:if test="${param.waitingError == 'duplicate'}">
+            <div class="error-box">
+                이미 해당 시간에 대기 신청을 했습니다.
+            </div>
+        </c:if>
+
+        <c:if test="${param.waitingError == 'alreadyParticipated'}">
+            <div class="error-box">
+                이미 해당 시간에 참여 신청을 해서 대기 신청할 수 없습니다.
+            </div>
+        </c:if>
+
         <form action="/participation" method="post" id="participationForm">
             <input type="hidden" name="participationType" value="${participationType}">
 
@@ -110,37 +128,29 @@
                     </div>
                 </div>
 
-                <div class="time-section">
-                    <p class="time-section-title">사용자 설정 시간</p>
+                <c:if test="${not empty partyTimes}">
+                    <div class="time-section">
+                        <p class="time-section-title">파티 생성 시간</p>
 
-                    <c:choose>
-                        <c:when test="${empty partyTimes}">
-                            <div class="empty-time-box">
-                                아직 만들어진 파티 시간이 없습니다.
-                            </div>
-                        </c:when>
-
-                        <c:otherwise>
-                            <div class="custom-party-time-grid">
-                                <c:forEach var="time" items="${partyTimes}">
-                                    <label class="option-card time-option" data-time="${time}">
-                                        <input
-                                                type="checkbox"
-                                                name="selectedTimes"
-                                                value="${time}"
-                                                class="time-checkbox"
-                                                data-time="${time}"
-                                        >
-                                        <span class="time-label">${time}시</span>
-                                    </label>
-                                </c:forEach>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
+                        <div class="custom-party-time-grid">
+                            <c:forEach var="time" items="${partyTimes}">
+                                <label class="option-card time-option" data-time="${time}">
+                                    <input
+                                            type="checkbox"
+                                            name="selectedTimes"
+                                            value="${time}"
+                                            class="time-checkbox"
+                                            data-time="${time}"
+                                    >
+                                    <span class="time-label">${time}시</span>
+                                </label>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </c:if>
 
                 <p class="time-help">
-                    고정 시간 또는 파티장이 만든 시간을 선택해주세요.
+                    참여 가능한 시간을 선택해주세요.
                 </p>
             </div>
 
@@ -159,6 +169,142 @@
                 <button type="submit" class="submit-btn">참여 신청</button>
             </div>
         </form>
+
+        <div class="waiting-section">
+            <div class="waiting-header">
+                <h2>대기 신청</h2>
+                <p>
+                    인원이 가득 찬 시간만 대기 신청할 수 있습니다.
+                    연락두절 또는 취소 인원이 생기면 운영자가 대기자 순서대로 확인할 수 있습니다.
+                </p>
+            </div>
+
+            <div class="waiting-available-box">
+                <h3>대기 신청 가능한 시간</h3>
+
+                <c:choose>
+                    <c:when test="${empty fullTimes}">
+                        <div class="empty-time-box">
+                            아직 인원이 가득 찬 시간이 없습니다.
+                        </div>
+                    </c:when>
+
+                    <c:otherwise>
+                        <div class="waiting-card-list">
+                            <c:forEach var="time" items="${fullTimes}">
+                                <div class="waiting-card">
+                                    <div class="waiting-card-title">
+                                        <strong>${time}시 ${participationType.label}</strong>
+                                        <span>마감</span>
+                                    </div>
+
+                                    <form action="/waiting/submit" method="post" class="waiting-form">
+                                        <input type="hidden" name="participationType" value="${participationType}">
+                                        <input type="hidden" name="selectedTime" value="${time}">
+
+                                        <c:choose>
+                                            <c:when test="${participationType.name() == 'ARAM'}">
+                                                <input type="hidden" name="selectedLine" value="ANY">
+                                                <button type="submit" class="waiting-submit-btn">
+                                                    ${time}시 대기 신청
+                                                </button>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <div class="waiting-line-box">
+                                                    <p class="waiting-line-title">희망 라인</p>
+
+                                                    <div class="waiting-line-grid">
+                                                        <c:forEach var="line" items="${lines}">
+                                                            <label class="waiting-line-option">
+                                                                <input
+                                                                        type="radio"
+                                                                        name="selectedLine"
+                                                                        value="${line.name()}"
+                                                                        required
+                                                                >
+                                                                <span>
+                                                                    <c:choose>
+                                                                        <c:when test="${line.name() == 'TOP'}">탑</c:when>
+                                                                        <c:when test="${line.name() == 'JUNGLE'}">정글</c:when>
+                                                                        <c:when test="${line.name() == 'MID'}">미드</c:when>
+                                                                        <c:when test="${line.name() == 'AD'}">원딜</c:when>
+                                                                        <c:when test="${line.name() == 'ADC'}">원딜</c:when>
+                                                                        <c:when test="${line.name() == 'SUPPORT'}">서폿</c:when>
+                                                                        <c:otherwise>${line}</c:otherwise>
+                                                                    </c:choose>
+                                                                </span>
+                                                            </label>
+                                                        </c:forEach>
+
+                                                        <label class="waiting-line-option">
+                                                            <input
+                                                                    type="radio"
+                                                                    name="selectedLine"
+                                                                    value="ANY"
+                                                                    required
+                                                            >
+                                                            <span>상관없음</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <button type="submit" class="waiting-submit-btn">
+                                                    ${time}시 대기 신청
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </form>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+
+            <div class="waiting-current-box">
+                <h3>현재 대기자 현황</h3>
+
+                <c:choose>
+                    <c:when test="${empty waitingMap}">
+                        <div class="empty-time-box">
+                            아직 대기 신청자가 없습니다.
+                        </div>
+                    </c:when>
+
+                    <c:otherwise>
+                        <div class="waiting-status-list">
+                            <c:forEach var="entry" items="${waitingMap}">
+                                <div class="waiting-status-card">
+                                    <h4>${entry.key}시 ${participationType.label} 대기자</h4>
+
+                                    <ol class="waiting-user-list">
+                                        <c:forEach var="waiting" items="${entry.value}">
+                                            <li>
+                                                <strong>${waiting.member.nickname}</strong>
+                                                <span>
+                                                    /
+                                                    <c:choose>
+                                                        <c:when test="${waiting.selectedLine == 'TOP'}">탑</c:when>
+                                                        <c:when test="${waiting.selectedLine == 'JUNGLE'}">정글</c:when>
+                                                        <c:when test="${waiting.selectedLine == 'MID'}">미드</c:when>
+                                                        <c:when test="${waiting.selectedLine == 'AD'}">원딜</c:when>
+                                                        <c:when test="${waiting.selectedLine == 'ADC'}">원딜</c:when>
+                                                        <c:when test="${waiting.selectedLine == 'SUPPORT'}">서폿</c:when>
+                                                        <c:when test="${waiting.selectedLine == 'ANY'}">상관없음</c:when>
+                                                        <c:otherwise>${waiting.selectedLine}</c:otherwise>
+                                                    </c:choose>
+                                                </span>
+                                            </li>
+                                        </c:forEach>
+                                    </ol>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
 
         <c:if test="${participationType.name() != 'ARAM'}">
             <div class="notice">

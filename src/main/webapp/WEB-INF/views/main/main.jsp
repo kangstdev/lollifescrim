@@ -18,6 +18,21 @@
             <div class="brand-badge">⚔️</div>
             <h1>롤면서살자</h1>
             <p>내전 · 자유랭크 · 증바람 참여 신청</p>
+            <br />
+            <a href="https://naejeon.lol/"
+               target="_blank"
+               rel="noopener noreferrer"
+               style="display:inline-block; padding:10px 14px; background:#2563eb; color:white; text-decoration:none; border-radius:8px; font-weight:600;">
+                내전통계 사이트이동
+            </a>
+            <br />
+            <br />
+            <a href="https://www.youtube.com/results?search_query=%EB%A1%A4%EB%A9%B4%EC%84%9C%EC%82%B4%EC%9E%90"
+               target="_blank"
+               rel="noopener noreferrer"
+               style="display:inline-block; padding:10px 14px; background:#ef4444; color:white; text-decoration:none; border-radius:8px; font-weight:600;">
+                롤면서 살자 유튜브
+            </a>
         </div>
 
 <div class="profile-box">
