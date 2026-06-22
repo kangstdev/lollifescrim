@@ -9,6 +9,7 @@ import com.lolmyeon.lol.member.entity.MemberRole;
 import com.lolmyeon.lol.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${app.invite-code}")
     private String inviteCode;
@@ -31,9 +33,11 @@ public class MemberService {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+
         Member member = Member.builder()
                 .nickname(request.getNickname())
-                .password(request.getPassword())
+                .password(encodedPassword)
                 .mainLine(request.getMainLine())
                 .subLine(request.getSubLine())
                 .tier(request.getTier())
@@ -43,17 +47,29 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    @Transactional(readOnly = true)
     public LoginMember login(LoginRequest request) {
         Member member = memberRepository.findByNickname(request.getNickname())
                 .orElseThrow(() -> new IllegalArgumentException("닉네임 또는 비밀번호가 올바르지 않습니다."));
 
-        if (!member.getPassword().equals(request.getPassword())) {
+        if (member.isDeleted()) {
+            throw new IllegalArgumentException("삭제 처리된 계정입니다.");
+        }
+
+        String storedPassword = member.getPassword();
+        String inputPassword = request.getPassword();
+
+        boolean passwordMatches = isPasswordMatches(inputPassword, storedPassword);
+
+        if (!passwordMatches) {
             throw new IllegalArgumentException("닉네임 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        if (member.isDeleted()) {
-            throw new IllegalArgumentException("삭제 처리된 계정입니다.");
+        /*
+         * 기존 평문 비밀번호 계정이면
+         * 로그인 성공 시 BCrypt 해시 비밀번호로 자동 전환
+         */
+        if (!isBCryptPassword(storedPassword)) {
+            member.changePassword(passwordEncoder.encode(inputPassword));
         }
 
         return new LoginMember(
@@ -92,8 +108,12 @@ public class MemberService {
 
         String password = member.getPassword();
 
+        /*
+         * 회원정보 수정에서 비밀번호를 입력한 경우에만
+         * 새 비밀번호를 BCrypt로 암호화해서 저장
+         */
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            password = request.getPassword();
+            password = passwordEncoder.encode(request.getPassword());
         }
 
         member.updateInfo(
@@ -111,6 +131,32 @@ public class MemberService {
                 member.getSubLine(),
                 member.getRole(),
                 member.getTier()
+        );
+    }
+
+    /**
+     * 입력 비밀번호와 DB 비밀번호 비교
+     *
+     * 기존 평문 비밀번호도 임시로 허용합니다.
+     * 평문 계정은 로그인 성공 시 BCrypt로 자동 전환됩니다.
+     */
+    private boolean isPasswordMatches(String inputPassword, String storedPassword) {
+        if (isBCryptPassword(storedPassword)) {
+            return passwordEncoder.matches(inputPassword, storedPassword);
+        }
+
+        return storedPassword.equals(inputPassword);
+    }
+
+    /**
+     * BCrypt 해시 비밀번호인지 확인
+     */
+    private boolean isBCryptPassword(String password) {
+        return password != null
+                && (
+                password.startsWith("$2a$")
+                        || password.startsWith("$2b$")
+                        || password.startsWith("$2y$")
         );
     }
 }

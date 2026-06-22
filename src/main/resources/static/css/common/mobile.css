@@ -1,0 +1,135 @@
+@media (max-width: 768px) {
+
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .page-wrap {
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px 14px;
+        box-sizing: border-box;
+    }
+
+    .form-card,
+    .main-card,
+    .status-card,
+    .list-card,
+    .board-card,
+    .content-card {
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+        padding: 24px 18px;
+        border-radius: 20px;
+    }
+
+    .header {
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 24px;
+        line-height: 1.3;
+    }
+
+    .header p {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    input,
+    select {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    textarea {
+        width: 100%;
+        min-height: 120px;
+    }
+
+    button,
+    .submit-btn,
+    .back-btn,
+    .cancel-btn,
+    .edit-btn,
+    .delete-btn,
+    .waiting-submit-btn {
+        min-height: 48px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
+
+    .button-row {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .button-row a,
+    .button-row button {
+        width: 100%;
+        text-align: center;
+    }
+
+    .line-grid,
+    .fixed-time-grid,
+    .custom-party-time-grid,
+    .waiting-line-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .option-card,
+    .time-option,
+    .waiting-line-option {
+        min-height: 46px;
+        padding: 12px 10px;
+        box-sizing: border-box;
+    }
+
+    .profile-box,
+    .notice,
+    .error-box,
+    .success-box,
+    .empty-time-box,
+    .current-status-box,
+    .waiting-card,
+    .waiting-status-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .waiting-section {
+        margin-top: 28px;
+    }
+
+    table {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    a {
+        -webkit-tap-highlight-color: transparent;
+    }
+}

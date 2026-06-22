@@ -1,13 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>롤면서살자</title>
 
     <link rel="stylesheet" href="<c:url value='/css/main/main.css' />">
+    <link rel="stylesheet" href="<c:url value='/css/common/mobile.css' />">
 </head>
 <body>
 

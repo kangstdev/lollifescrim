@@ -81,5 +81,9 @@ public class Member {
         this.password = "DELETED_ACCOUNT";
     }
 
+    //비밀번호 해쉬처리
+    public void changePassword(String password) {
+        this.password = password;
+    }
 
 }
